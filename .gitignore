@@ -1,0 +1,8 @@
+node_modules/
+*.sock
+*.log
+.env*
+read-receipts.json
+status.json
+health.json
+selftest.json
