@@ -29,6 +29,13 @@ Linux、niri、Noctalia（插件 API 32）、Node.js，以及已安装并登录�
 
 ## 演示
 
+真实桌面操作（无声循环动图）：
+
+![实机演示一](demo/live-3.gif)
+
+![实机演示二](demo/live-4.gif)
+
+
 - [30 秒功能动画](demo/showcase-30s.mp4)
 - [34 秒实机录屏](demo/real-desktop-demo.mp4)
 - [工作成员探头](demo/01-peek-8s.mp4)
