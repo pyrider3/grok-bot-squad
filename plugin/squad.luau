@@ -129,7 +129,7 @@ function update()
     local grid=ui.column({key="members",gap=6,height=gridHeight},memberRows)
     local footer={ui.label({text=hover~="" and "点击成员查看消息" or model.summary(s),fontSize=10,color="on_surface_variant",flexGrow=1}),
         ui.button({glyph="chevron-up",variant="ghost",onClick="collapse",tooltip="收起小队"})}
-    table.insert(footer,ui.button({text=pinMode and "完成设置" or "常驻设置",variant="ghost",onClick=function()
+    table.insert(footer,ui.button({glyph=pinMode and "check" or "settings",tooltip=pinMode and "完成常驻设置" or "常驻设置",variant="ghost",onClick=function()
         pinMode=not pinMode
         if pinMode then chatMode=false animateChat(0) end
         update()
