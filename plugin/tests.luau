@@ -25,6 +25,8 @@ return function()
     roster.running=true
     members,extra=pins.members(roster,{idle=true,busy=true},1)
     check(#members==1 and extra==1,"pinned and working members deduplicate and respect limit")
+    local defaultShape,defaultColor=require("./avatar_defaults.luau").resolve("56cb67b7-c028-4151-ac86-1f147d465090")
+    check(defaultShape=="teardrop" and defaultColor=="green","generated avatar matches application defaults")
     check(model.key("nbswy3dp.blob") == "hello", "base32 file decoding")
     check(model.key("invalid!.blob") == "", "ignore unrelated files")
     local rows, err = model.parse({schemaVersion=4,value={rows={

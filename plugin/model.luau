@@ -1,6 +1,7 @@
 --!nonstrict
 -- Port of hmarquez-solutions/omarchy-grok-bot's MIT-licensed Model.js.
 local M = {}
+local avatarDefaults=require("./avatar_defaults.luau")
 local alphabet = "abcdefghijklmnopqrstuvwxyz234567"
 function M.key(file)
     local stem = string.match(file, "^([a-z2-7]+)%.blob$")
@@ -53,9 +54,10 @@ function M.parse(raw)
             if reason == "" and waiting then reason = M.clean(waiting.reason, 180) end
             reason = reasons[reason] or reason
             if waiting and reason == "" then reason = "等待你的回答或批准" end
+            local defaultShape,defaultColor=avatarDefaults.resolve(row.id)
             table.insert(out, {
                 id = M.clean(row.id, 80), name = M.clean(row.name, 48),
-                avatarShape = M.clean(row.avatarShape, 24), avatarColor = M.clean(row.avatarColor, 24),
+                avatarShape = M.clean(row.avatarShape, 24)~="" and M.clean(row.avatarShape,24) or defaultShape, avatarColor = M.clean(row.avatarColor,24)~="" and M.clean(row.avatarColor,24) or defaultColor,
                 title = M.clean(row.title, 80), description = M.clean(row.description, 160),
                 unread = math.max(0, math.floor(tonumber(row.unreadCount) or 0)),
                 hasUnread = row.hasUnread == true, waiting = waiting ~= nil, reason = reason,
