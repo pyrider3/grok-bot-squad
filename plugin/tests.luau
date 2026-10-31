@@ -91,6 +91,11 @@ return function()
     check(#partial==4 and partial[4]==1,"last single member has its own centered row")
     local peek = require("./peek.luau")
     local face = require("./face.luau")
+    for _,shape in ipairs({"house","square","wedge"}) do
+        local shapePath=face.path("idle",0,shape,"orange")
+        check(string.find(shapePath,"-"..shape.."-",1,true)~=nil,"picker shape does not fall back: "..shape)
+        check(noctalia.fileExists(shapePath),"picker shape generates SVG: "..shape)
+    end
     local image = face.path("working",0)
     local sample = {running=true, agents={}}
     for i=1,4 do table.insert(sample.agents,{id="peek-test-"..tostring(i),name="Test",state="working",waiting=false,avatarShape="heart",avatarColor="blue"}) end

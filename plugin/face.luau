@@ -57,6 +57,11 @@ local a,b=points[1],points[2]
 table.insert(star,string.format("Q%.2f %.2f %.2f %.2fZ",a[1],a[2],(a[1]+b[1])/2,(a[2]+b[2])/2))
 silhouettes.star='<path d="'..table.concat(star,' ')..'"/>'
 
+-- Additional shapes used by the mobile avatar picker.
+silhouettes.house='<path d="M5 18 Q5 15 8 12 L17 3 Q20 0 23 3 L33 12 Q36 15 36 19 V32 Q36 37 31 37 H9 Q4 37 4 32Z"/>'
+silhouettes.square='<rect x="3" y="3" width="34" height="34" rx="5.5"/>'
+silhouettes.wedge='<path d="M8 4 C12 1 32 13 36 19 Q40 24 33 28 L12 37 Q4 40 4 31 L4 12 Q4 6 8 4Z"/>'
+silhouettes.triangle=silhouettes.wedge
 local poses = {
             {0, 0, 0, -22}, {1.1, 4.8, -2.8, -12}, {2.7, -4.6, -1.5, -40},
             {4.1, -2.4, 3.1, -18}, {5.8, 3.8, 2.4, -32}, {7.2, 0, -3.6, -6},
@@ -78,7 +83,7 @@ function F.path(mood, elapsed, shape, avatarColor)
     shape = silhouettes[shape] and shape or "blob"
     local dark = false
     local arrival = animate and mood == "unread" and elapsed < 650
-    local key = "avatar-v6-" .. shape .. "-" .. mood .. "-" .. string.sub(color, 2) .. "-" .. tostring(frame) .. (arrival and "-arrival" or "")
+    local key = "avatar-v7-" .. shape .. "-" .. mood .. "-" .. string.sub(color, 2) .. "-" .. tostring(frame) .. (arrival and "-arrival" or "")
     local path = dir .. "/" .. key .. ".svg"
     if cache[key] then return path end
     if noctalia.fileExists(path) then cache[key]=true return path end
