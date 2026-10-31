@@ -15,6 +15,16 @@ return function()
     check(not readState.matchesLatest(unread,{}),"empty transcript is not read")
     check(not readState.matchesLatest(unread,{{text="旧消息"}}),"stale transcript is not read")
     check(readState.matchesLatest(unread,{{text="你好"}}),"latest loaded message matches roster")
+    local pins=require("./pins.luau")
+    local roster={running=true,agents={{id="idle",name="Idle",state="idle"},{id="busy",name="Busy",state="working"}}}
+    local members,extra=pins.members(roster,{idle=true},10)
+    check(#members==2 and members[1].id=="idle","idle pinned member precedes automatic workers")
+    roster.running=false
+    check(#pins.members(roster,{idle=true},10)==1,"pinned member stays when app stops")
+    check(#pins.members(roster,{},10)==0,"unpinned idle members remain hidden")
+    roster.running=true
+    members,extra=pins.members(roster,{idle=true,busy=true},1)
+    check(#members==1 and extra==1,"pinned and working members deduplicate and respect limit")
     check(model.key("nbswy3dp.blob") == "hello", "base32 file decoding")
     check(model.key("invalid!.blob") == "", "ignore unrelated files")
     local rows, err = model.parse({schemaVersion=4,value={rows={

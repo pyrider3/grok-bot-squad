@@ -20,14 +20,8 @@ local function source(path,tag,x)
     return result
 end
 function P.render(s,now,mainImage)
-    local desired,overflow={},0
-    for _,a in ipairs(s.agents) do
-        -- The roster's default Grok Bot is already represented by the lead face.
-        local lead=a.name=="Grok Bot" and a.avatarShape=="blob"
-        if s.running and not lead and (a.state=="working" or a.state=="waiting") then
-            if #desired<layout.barLimit then table.insert(desired,a) else overflow=overflow+1 end
-        end
-    end
+    local pins=require("./pins.luau")
+    local desired,overflow=pins.members(s,pins.get(),layout.barLimit)
     local targets={}
     for slot,a in ipairs(desired) do
         targets[a.id]=true

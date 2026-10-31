@@ -20,6 +20,8 @@ local messages={}
 local transcriptError=""
 local opened, closing, started, closeAt, last = false, false, 0, 0, 0
 local hover = ""
+local pinMode=false
+local pins=require("./pins.luau")
 local clocks = {}
 local renders = 0
 local healthAt = 0
@@ -106,11 +108,11 @@ function update()
         end
         table.insert(members,ui.column({key=id,width=60,height=82,align="center",justify="center",gap=4,
             opacity=progress,radius=12,fill=(hover==id or selectedId==id) and "primary/0.15" or (a.waiting and "error/0.10" or "surface/0"),
-            onClick=function() choose(id) end,
+            onClick=function() if pinMode then pins.toggle(id) else choose(id) end end,
             onHover=function(value) if value=="true" then hover=id elseif hover==id then hover="" end end,
             tooltip=a.name.." · "..(model.labels[state] or "待命")..(a.waiting and ("\n"..a.reason) or "")}, {
             ui.image({key="face-"..id,path=portrait.path,width=44,height=44}),
-            ui.label({text=model.clean(a.name,7),fontSize=10,maxLines=1,color=hover==id and "primary" or "on_surface"}),
+            ui.label({text=(pinMode and (pins.get()[id] and "✓ " or "○ ") or "")..model.clean(a.name,7),fontSize=10,maxLines=1,color=hover==id and "primary" or "on_surface"}),
             ui.label({text=a.waiting and "等你处理" or (a.unread>0 and tostring(a.unread).." 未读" or ""),fontSize=9,color=color}),
         }))
     end
@@ -127,6 +129,12 @@ function update()
     local grid=ui.column({key="members",gap=6,height=gridHeight},memberRows)
     local footer={ui.label({text=hover~="" and "点击成员查看消息" or model.summary(s),fontSize=10,color="on_surface_variant",flexGrow=1}),
         ui.button({glyph="chevron-up",variant="ghost",onClick="collapse",tooltip="收起小队"})}
+    table.insert(footer,ui.button({text=pinMode and "完成设置" or "常驻设置",variant="ghost",onClick=function()
+        pinMode=not pinMode
+        if pinMode then chatMode=false animateChat(0) end
+        update()
+    end}))
+    if pinMode then footer[1]=ui.label({text="点击头像切换常驻 · 最多显示 10 位",fontSize=10,color="primary",flexGrow=1}) end
     if pages>1 then table.insert(footer,ui.button({text=tostring(page+1).."/"..tostring(pages),variant="ghost",onClick=function() noctalia.state.set("squad_page",(page+1)%pages) started=now end})) end
     if chatProgress<=0 and not chatMode then
         renderShell(compactHeight,{
@@ -197,7 +205,7 @@ function update()
 end
 function onOpen(context)
     drafts=noctalia.state.get("drafts") or drafts
-    selectedId=nil chatMode=false
+    selectedId=nil chatMode=false pinMode=false
     chatProgress=0 chatFrom=0 chatTarget=0 chatStarted=noctalia.nowMs()
     measuredAt=noctalia.nowMs() measuredFrames=renders cachedSnapshot=nil opened=true closing=false started=noctalia.nowMs()-((chatMode or context=="return") and 1000 or 0) hover="" panel.setNeedsFrameTick(true) update() end
 function onClose() opened=false closing=false
